@@ -1,0 +1,3 @@
+#!/bin/bash
+# TODO: should be improved to find dupes on a given key, not just whole obj dupes
+jq 'group_by(.) | map(select(length>1) | .[0])'

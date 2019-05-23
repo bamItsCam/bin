@@ -1,0 +1,11 @@
+#!/bin/bash
+# run this github command from any dir that has a git repo in it
+# it ain't pretty, but it'll work
+gitURL=$(git config --get remote.origin.url | sed 's/git@//' | sed 's/.git//' | sed 's/:/\//')
+if [ "${gitURL}" != "" ]; then
+	firefox -new-tab "${gitURL}"
+	echo "Redirected to ${gitURL}"
+else
+	echo "No github url found in the current dir"
+	exit 1
+fi

@@ -1,0 +1,51 @@
+#!/bin/bash
+# credit goes to http://github.com/jehiah
+# this prints how far ahead/behind the current branch is compared to remote
+
+TOTAL_DIFFERENCES=0
+CWHITE='\e[0;37;40m'
+CGREEN='\e[0;32;40m'
+CYELLOW='\e[0;33;40m'
+CRED='\e[0;31;40m'
+CEND='\033[0m'
+
+local=$(git rev-parse --abbrev-ref HEAD)
+rc=$?
+if [[ $rc -ne 0 ]]; then
+	# must not be a valid git directory
+	exit $rc
+fi
+
+if [[ -z "$1" ]]; then
+	remote_branch="$local"
+else
+	remote_branch="$1"
+fi
+
+remote="origin/${remote_branch}"
+
+git fetch -q origin $remote_branch
+rc=$?
+if [[ $rc -ne 0 ]]; then
+	# can't seem to git fetch, perms must be invalid
+	echo "Please ensure your git creds for pulling are valid"
+	exit $rc
+fi
+
+LEFT_AHEAD=$(git rev-list ${remote}..${local} --count)
+RIGHT_AHEAD=$(git rev-list ${local}..${remote} --count)
+TOTAL_DIFFERENCES=$(($LEFT_AHEAD + $RIGHT_AHEAD + $TOTAL_DIFFERENCES))
+MSG_LEFT_AHEAD="$LEFT_AHEAD commit(s) ahead"
+MSG_RIGHT_AHEAD="$RIGHT_AHEAD commit(s) behind"
+
+if [ "$LEFT_AHEAD" -ne 0 ]; then
+    MSG_LEFT_AHEAD="$CYELLOW$MSG_LEFT_AHEAD$CEND"
+fi
+if [ "$RIGHT_AHEAD" -ne 0 ]; then
+    MSG_RIGHT_AHEAD="$CRED$MSG_RIGHT_AHEAD$CEND"
+fi
+echo -e "$CWHITE${local}$CEND is $MSG_LEFT_AHEAD and $MSG_RIGHT_AHEAD ${remote}"
+
+if [ "$TOTAL_DIFFERENCES" == 0 ]; then
+    echo -e "${CGREEN}Everything is synchronized.${CEND}"
+fi

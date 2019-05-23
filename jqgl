@@ -1,0 +1,20 @@
+#!/bin/bash
+# jq group by and select fields to show from objects that were grouped
+# Usage: 
+#	cat list_of_objects.json| jqgl <groupby_field> "{field1:.field1, field2:.field2}"
+# Returns
+# {
+#  "group": <groupby_value>,
+#  "list": [
+#    {
+#      "field1": <sample_value1>,
+#      "field2": <sample_value2>
+#    }
+#  ],
+#  "count": 1
+#}
+
+GROUP_KEY=$1
+LIST_OBJ=$2
+
+jq --arg gkey $GROUP_KEY 'group_by(.[$gkey])[] | {group:(.[0][$gkey]), list: [.[] | '"$LIST_OBJ"'], count:length}'

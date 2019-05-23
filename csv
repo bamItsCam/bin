@@ -1,0 +1,3 @@
+#!/bin/bash
+
+column -t -n -s, | less -N -S
