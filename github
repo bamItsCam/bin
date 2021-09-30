@@ -1,7 +1,15 @@
 #!/bin/bash
 # run this github command from any dir that has a git repo in it
 # it ain't pretty, but it'll work
+# $1 = base of the compare
+head=$(git rev-parse --abbrev-ref HEAD)
+base=master
+if [ "$1" != "" ]; then
+	base=$1
+fi
+compareSuffix="/compare/$base...$(git rev-parse --abbrev-ref HEAD)"
 gitURL=$(git config --get remote.origin.url | sed 's/git@//' | sed 's/.git//' | sed 's/:/\//')
+gitURL="$gitURL$compareSuffix"
 if [ "${gitURL}" != "" ]; then
 	firefox -new-tab "${gitURL}"
 	echo "Redirected to ${gitURL}"
