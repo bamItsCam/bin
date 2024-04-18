@@ -3,11 +3,12 @@
 # this prints how far ahead/behind the current branch is compared to remote
 
 TOTAL_DIFFERENCES=0
-CWHITE='\e[0;37;40m'
-CGREEN='\e[0;32;40m'
-CYELLOW='\e[0;33;40m'
-CRED='\e[0;31;40m'
+CPURPLE='\033[0;35m'
+CGREEN='\033[0;32m'
+CBLUE='\033[0;34m'
+CRED='\033[0;31m'
 CEND='\033[0m'
+
 
 local=$(git rev-parse --abbrev-ref HEAD)
 rc=$?
@@ -39,12 +40,12 @@ MSG_LEFT_AHEAD="$LEFT_AHEAD commit(s) ahead"
 MSG_RIGHT_AHEAD="$RIGHT_AHEAD commit(s) behind"
 
 if [ "$LEFT_AHEAD" -ne 0 ]; then
-    MSG_LEFT_AHEAD="$CYELLOW$MSG_LEFT_AHEAD$CEND"
+    MSG_LEFT_AHEAD="$CBLUE$MSG_LEFT_AHEAD$CEND"
 fi
 if [ "$RIGHT_AHEAD" -ne 0 ]; then
     MSG_RIGHT_AHEAD="$CRED$MSG_RIGHT_AHEAD$CEND"
 fi
-echo -e "$CWHITE${local}$CEND is $MSG_LEFT_AHEAD and $MSG_RIGHT_AHEAD ${remote}"
+echo -e "$CPURPLE${local}$CEND is $MSG_LEFT_AHEAD and $MSG_RIGHT_AHEAD ${remote}"
 
 if [ "$TOTAL_DIFFERENCES" == 0 ]; then
     echo -e "${CGREEN}Everything is synchronized.${CEND}"
